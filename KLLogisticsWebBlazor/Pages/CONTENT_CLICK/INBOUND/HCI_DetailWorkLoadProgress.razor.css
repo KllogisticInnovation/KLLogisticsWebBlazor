@@ -1,0 +1,39 @@
+﻿
+
+.bx-container {
+    width: auto;
+    margin: auto;
+    border: solid 2px #c9c9c9;
+    height: auto;
+    border-radius:5px;
+    font-size:22px;
+}
+
+.Header-Grid-Item-2 {
+    padding-left: 10px;
+    background-color: #c9c9c9;
+    color: #000000;
+}
+
+.btnclose {
+    border: solid 2px #c9c9c9;
+    border-radius: 10px;
+    padding: 5px;
+    right: 15px;
+    bottom: 5px;
+    width: 1000px;
+    font-size: 15px;
+    font-weight: bold;
+    height:25px;
+}
+
+    .btnclose:hover {
+        background-color: #e4e4e4;
+    }
+.containerbox{
+    width:900px;
+    height:600px;
+    padding:10px;
+    font-size:12px;
+    display:grid;
+}

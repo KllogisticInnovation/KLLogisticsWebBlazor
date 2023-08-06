@@ -1,0 +1,92 @@
+﻿.panelbody {
+    display: flex; /* Menggunakan flexbox untuk mengatur tata letak elemen */
+    padding: 1px;
+}
+<style >
+.label-container {
+    display: flex; /* Menggunakan flexbox untuk mengatur tata letak elemen */
+    align-items: center;
+    margin: 15px;
+    gap: 5px;
+}
+.label-container {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin-Right: 150px;
+    font-size: 80px; /* untuk mengatur ukuran elemen */
+    padding-left: 15px; /* Atur padding kiri sesuai kebutuhan */
+}
+.iconp {
+    margin-Right: 200px;
+    font-size: 80px; /* untuk mengatur ukuran elemen */
+    padding-left: 15px; /* Atur padding kiri sesuai kebutuhan */
+}
+.icone {
+    margin-Right: 220px;
+    font-size: 80px; /* untuk mengatur ukuran elemen */
+    padding-left: 15px; /* Atur padding kiri sesuai kebutuhan */
+}
+.icona {
+    margin-Right: 250px;
+    font-size: 80px; /* untuk mengatur ukuran elemen */
+    padding-left: 15px; /* Atur padding kiri sesuai kebutuhan */
+}
+
+.text {
+    font-size: 14px; /* Ukuran teks */
+    padding: 5px; /* Atur padding kiri sesuai kebutuhan */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.text1 {
+    font-size: 50px; /* Ukuran teks */
+    justify-content: flex-end;
+}
+
+
+<style >
+.divclass {
+    padding: 6px;
+    color: white;
+}
+
+@font-face {
+    font-family: 'font-v1';
+    src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAAKAIAAAwAgT1MvMj1uSfgAAAEoAAAAVmNtYXC1MrWMAAABlAAAAExnbHlmrd1ADQAAAewAAAU0aGVhZB6qN5MAAADQAAAANmhoZWEIUQQGAAAArAAAACRobXR4FAAAAAAAAYAAAAAUbG9jYQJeBBIAAAHgAAAADG1heHABFAEaAAABCAAAACBuYW1lCiOk4wAAByAAAAIlcG9zdAzQJ7QAAAlIAAAARQABAAAEAAAAAFwEAAAAAAAD9AABAAAAAAAAAAAAAAAAAAAABQABAAAAAQAAudnvg18PPPUACwQAAAAAAN3L+U8AAAAA3cv5TwAAAAAD9AP4AAAACAACAAAAAAAAAAEAAAAFAQ4ABQAAAAAAAgAAAAoACgAAAP8AAAAAAAAAAQQAAZAABQAAAokCzAAAAI8CiQLMAAAB6wAyAQgAAAIABQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGZFZABA5wHnBgQAAAAAXAQAAAAAAAABAAAAAAAABAAAAAQAAAAEAAAABAAAAAQAAAAAAAACAAAAAwAAABQAAwABAAAAFAAEADgAAAAIAAgAAgAA5wLnBOcG//8AAOcB5wTnBv//AAAAAAAAAAEACAAKAAoAAAABAAIAAwAEAAAAAABMAXgCEgKaAAEAAAAAA1AD+AA8AAABLwcjDw4VHw4zPw4RMzUhAgANDQ0ODg8PDwwWFhUUExIRDw0NCggHBAMDBAcICg0NDxESExQVFhYYFhYVFBMSEQ8ODAoIBwQD4P6wAakHBgUFAwMBAQMEBwgKDA4PERITFBUWFhgWFhUUExIRDw4MCggHBAMDBAcICgwODxESExQVFhYCPOAAAAAABQAAAAAD9AP4AAUAhQEFAQkBDQAAARc3JxEjBRUPHi8ePQE/Hh8eBRUfHj8ePQEvHg8eARc3JwUXNycBzu4lyEsBkAICAwQEBgYHCAgJCgsLCwwNDQ4ODw8QEBAQERIREhISEhESERARDxAPDw4ODQ0MCwsLCgkICAcGBgQEAwICAgIDBAQGBgcICAkKCwsLDA0NDg4PDxAPERAREhESEhISERIREBEPEA8PDg4NDQwLCwsKCQgIBwYGBAQDAgL84AIDBAUGBwgJCgsLDQ0ODxAQERISExMUFRUVFhYXFxcXFxcWFhUVFBQUExIREhAQDg8NDQsLCgkIBwYFBAMCAgMEBQYHCAkKCwsNDQ8OEBAREhITFBQUFRUWFhcXFxcXFxYWFRUUFBQTEhIREA8PDw0MDAsKCQgHBgUEAwICkOZA5vz+QOZAAZiOPXcBB/sSERIREREQEA8QDg4ODQ0MDAsKCgkJBwcHBQUEAwIBAQEBAgMEBQUHBwcJCQoKCwwMDQ0ODg4QDxAQEREREhESExESEREREBAPEA4ODg0NDAwLCgoJCQcHBwUFBAMCAQEBAQIDBAUFBwcHCQkKCgsMDA0NDg4OEA8QEBERERIRExcXFhYWFRUVFBMTEhIREBAPDg4MDAsKCQgHBgUEAwEBAQEDBAUGBwgJCgsMDA4ODxAQERISExMUFRUVFhYWFxcYFxYWFhUVFRQTExISERAQDw4NDQwLCQkJBwYFBAMBAQEBAwQFBgcJCQkLDA0NDg8QEBESEhMTFBUVFRYWFhcBycFNwcFMwE0AAgAAAAADuQO5AAUAhQAACQEnNxcBBR8fPx8vHw8eAzX+c90/ngFO/VEBAQMEBQYHCAkJCwsNDQ4OEBAQEhETExMUFRUVFhYWFxcWFhYVFRUUExMTERIQEBAODg0NCwsJCQgHBgUEAwEBAQEDBAUGBwgJCQsLDQ0ODhAQEBIRExMTFBUVFRYWFhcXFhYWFRUVFBMTExESEBAQDg4NDQsLCQkIBwYFBAMBArD+dNw+ngFP7xcWFhYVFRUUExMTERIQEBAODg0NCwsJCQgHBgUEAwEBAQEDBAUGBwgJCQsLDQ0ODhAQEBIRExMTFBUVFRYWFhcXFhYWFRUVFBMTExESEBAQDg4NDQsLCQkIBwYFBAMBAQEBAwQFBgcICQkLCw0NDg4QEBASERMTExQVFRUWFhYAAAACAAAAAAOdA/gAIABzAAAlMz8NNSMVHw0DFQ8UEQcVITUnES8UPQEvDSsBDw0CAAoLCgkJCQgHBwYFBAQCAs4CAgQEBQYHBwgJCQkKCkMNDg0MDAwMCwoKChIRDw0LCgcGBAJoAzxoAQMFBwgLDA4QERMKCwsLDAwNDQ0OAQIDAwQEBQYGBgcHBwgICAgHBwcGBgYFBAQEAgIBCAIDAwQGBgYICAgJCgoKCgoKCgoJCAgIBgYGBAMDAgOiIwMFBAUGBgcHCAgJEhQWFxgZGxsdHf7vZzQ0ZwEDHR0cGxoYGBYVExIICAcHBgYFBQQDIwgICAcGBwYFBQUEAwMBAgIBAwMEBQUFBgcGCAcIAAAAAAAAEgDeAAEAAAAAAAAAAQAAAAEAAAAAAAEABwABAAEAAAAAAAIABwAIAAEAAAAAAAMABwAPAAEAAAAAAAQABwAWAAEAAAAAAAUACwAdAAEAAAAAAAYABwAoAAEAAAAAAAoALAAvAAEAAAAAAAsAEgBbAAMAAQQJAAAAAgBtAAMAAQQJAAEADgBvAAMAAQQJAAIADgB9AAMAAQQJAAMADgCLAAMAAQQJAAQADgCZAAMAAQQJAAUAFgCnAAMAAQQJAAYADgC9AAMAAQQJAAoAWADLAAMAAQQJAAsAJAEjIGZvbnQtdjFSZWd1bGFyZm9udC12MWZvbnQtdjFWZXJzaW9uIDEuMGZvbnQtdjFGb250IGdlbmVyYXRlZCB1c2luZyBTeW5jZnVzaW9uIE1ldHJvIFN0dWRpb3d3dy5zeW5jZnVzaW9uLmNvbQAgAGYAbwBuAHQALQB2ADEAUgBlAGcAdQBsAGEAcgBmAG8AbgB0AC0AdgAxAGYAbwBuAHQALQB2ADEAVgBlAHIAcwBpAG8AbgAgADEALgAwAGYAbwBuAHQALQB2ADEARgBvAG4AdAAgAGcAZQBuAGUAcgBhAHQAZQBkACAAdQBzAGkAbgBnACAAUwB5AG4AYwBmAHUAcwBpAG8AbgAgAE0AZQB0AHIAbwAgAFMAdAB1AGQAaQBvAHcAdwB3AC4AcwB5AG4AYwBmAHUAcwBpAG8AbgAuAGMAbwBtAAAAAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQECAQMBBAEFAQYABW11c2ljBWNsb2NrBHRpY2sEYmVsbAAAAAAA) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="sf-icon-"], [class*=" sf-icon-"] {
+    font-family: 'font-v1' !important;
+    speak: none;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+</style >
+
+
+<style >
+.chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.chart {
+    width: 400px;
+    height: 300px;
+    margin: 15px;
+    border: 1px solid #ccc;
+}
+</style >

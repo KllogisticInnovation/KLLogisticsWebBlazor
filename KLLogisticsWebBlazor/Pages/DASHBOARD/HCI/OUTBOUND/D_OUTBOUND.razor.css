@@ -1,0 +1,342 @@
+﻿.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    background-color: #00000000;
+    padding: 10px;
+    height : auto;
+}
+
+.grid-container5 {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    background-color: #00000000;
+    padding: 10px;
+    height: auto;
+}
+.charts {
+    grid-area:charts;
+    height:300px;
+}
+.textt {
+    grid-area:textt;
+}
+.grid-container-1{
+    display: grid;
+    grid-template-columns:50% auto;
+    grid-template-areas:'charts textt';
+    background-color: #00000000;
+    padding: 10px;
+    height:auto;
+}
+.grid-container-3 {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas: 'charts textt';
+    background-color: #00000000;
+    padding: 5px;
+    height: auto;
+}
+
+.grid-container-2 {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-areas: 'charts textt';
+    background-color: #00000000;
+    padding: 10px;
+    height: auto;
+    position :center;
+}
+.grid-container-4 {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-areas: 'charts textt';
+    background-color: #00000000;
+    padding: 10px;
+    height: auto;
+    position: center;
+}
+
+
+.container {
+    display: grid;
+    grid-template-columns: auto auto ;
+    background-color: #00000000;
+    padding: 10px
+}
+.grid-item:hover {
+    border-radius: 15px;
+    background-color: #a5a5a5;
+    color: rgba(255, 255, 255, 0.8);
+}
+.card:hover {
+    border-radius: 15px;
+    background-color: #a5a5a5;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+p:hover {
+color:rgba(255, 255, 255, 0.8);
+}
+
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 0px solid rgba(0, 0, 0, 0.8);
+    padding: 4px;
+    font-size: 20px;
+    text-align: center;
+    height :fit-content;
+}
+
+.FLOW_THRU {
+    box-shadow: 0 4px 8px 0 #b7b7b7;
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #b7b7b7;
+}
+
+
+.CUSTOMER {
+    box-shadow: 0 4px 8px 0 #b7b7b7;
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #b7b7b7;
+}
+
+.GRW {
+    box-shadow: 0 4px 8px 0 #b7b7b7;
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #b7b7b7;
+    text-size-adjust:20%;
+    font-size: 25px;
+}
+.GRWDKLK {
+
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    text-size-adjust: 20%;
+    font-size: 20px;
+}
+
+.E_Commerce_Other_Channel {
+    box-shadow: 0 4px 8px 0 #b7b7b7;
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #b7b7b7;
+}
+
+.ECommerce_ODI_Own_Fleet {
+    box-shadow: 0 4px 8px 0 #b7b7b7;
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: 100%;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #b7b7b7;
+}
+.grid-Unload-Continer {
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: #00000000;
+    padding: 10px;
+}
+.card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: auto;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #9d9d9d;
+}
+
+
+.card1 {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 100%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: auto;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #9d9d9d;
+}
+
+.card2 {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 50%;
+    margin: 0px 0px 15px 0px;
+    align-content: center;
+    height: auto;
+    text-align: center;
+    border-radius: 15px;
+    border-block: 2px solid;
+    border-color: #9d9d9d;
+}
+.text-setting1 {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 20px;
+    font-weight: 500;
+    color: #0628ff;
+    fill: #ffc100;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    text-shadow: 1px 1px 2px black;
+}
+.text-setting2 {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 20px;
+    font-weight: 500;
+    color: #0628ff;
+    fill: #ff9700;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    text-shadow: 1px 1px 2px black;
+}
+
+.text-setting3 {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 20px;
+    font-weight: 500;
+    color: #0628ff;
+    fill: #ff9700;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    text-shadow: 1px 1px 2px black;
+}
+.lableplan {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 25px;
+    font-weight: 500;
+    color: #acacac;
+    text-align: center;
+    align-items: flex-start;
+    align-content: normal;
+}
+
+.lableplan1 {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 30px;
+    font-weight: 500;
+    color: #717171;
+    text-align: center;
+    align-items: flex-start;
+    align-content: normal;
+}
+
+.textLABEL {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 25px;
+    font-weight: 500;
+    color: #acacac;
+    text-align: center;
+    align-items: center;
+    align-content: normal;
+}
+
+.NOT_GOOD {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 25px;
+    font-weight: 500;
+    color: #F44336;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    /*text-shadow: 1px 1px 2px black;*/
+}
+
+.GOOD {
+    padding: 1px;
+    margin: auto;
+    position: center;
+    font-size: 25px;
+    font-weight: 500;
+    color: #4caF50;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    /* text-shadow: 1px 1px 2px black;*/
+}
+.table_aging {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+   
+}
+    .table_aging td, table_aging th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        align-items:center;
+    }
+    .table_aging tr:nth-child(even) {
+        background-color: #E0E0E0;
+    }
+    .table_aging tr:hover {
+        background-color: #ddd;
+    }
+    .table_aging th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: center;
+        background-color: #9E9E9E;
+        color: black;
+        height: fit-content;
+    }

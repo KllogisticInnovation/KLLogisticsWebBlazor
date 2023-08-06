@@ -1,0 +1,120 @@
+﻿@layout MainLayout
+@inject HttpClient Http
+@inject IJSRuntime jsRuntime
+@inject IDialogService DialogService
+@using KLLogisticsWebBlazor.Pages.DASHBOARD.AHI.INBOUND;
+@using KLLogisticsWebBlazor.Pages.DASHBOARD.HCI.OUTBOUND;
+@using MudBlazor;
+@using Newtonsoft.Json;
+@using System.Net.Http.Headers;
+@using KLLogisticsWebBlazor.Config;
+@using KLLogisticsWebBlazor.Models;
+@using Syncfusion.Blazor.Charts;
+@using Syncfusion.Blazor.ProgressBar;
+@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.Data;
+@using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.DropDowns;
+@inject NavigationManager NavigationManager;
+@using System.Globalization;
+@using System.Net.Http.Json
+@using MudBlazor.Examples.Data.Models
+@inject HttpClient httpClient
+
+<div class="table-dialog" style="width: @Width; height: @Height;">
+    <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<detailprosespickingCS,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Detail Proses Check & Pack Customer</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>TRANSNO</MudTh>
+            <MudTh>SHIPPINGLINE</MudTh>
+            <MudTh>orderkey</MudTh>
+            <MudTh>Store / Cutomer</MudTh>
+            <MudTh>Status OD</MudTh>
+            <MudTh>caseid</MudTh>
+            <MudTh>Status Case ID</MudTh>
+            <MudTh>sku</MudTh>
+            <MudTh>descr</MudTh>
+            <MudTh>skugroup</MudTh>
+            <MudTh>qty</MudTh>
+            <MudTh>Keterangan</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="TRANSNO">@context.TRANSNO</MudTd>
+            <MudTd DataLabel="SHIPPINGLINE">@context.SHIPPINGLINE</MudTd>
+            <MudTd DataLabel="orderkey">@context.Orderkey</MudTd>
+            <MudTd DataLabel="orderkey">@context.Nama_Store_Customer</MudTd>
+            <MudTd DataLabel="Status OD">@context.Status_OD</MudTd>
+            <MudTd DataLabel="caseid">@context.caseid</MudTd>
+            <MudTd DataLabel="Status Case ID">@context.Status_Case_ID</MudTd>
+            <MudTd DataLabel="sku">@context.sku</MudTd>
+            <MudTd DataLabel="descr">@context.descr</MudTd>
+            <MudTd DataLabel="skugroup">@context.skugroup</MudTd>
+            <MudTd DataLabel="qty">@context.qty</MudTd>
+            <MudTd DataLabel="Keterangan">@context.Keterangan</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <div class="d-flex flex-wrap mt-4">
+        <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+        <MudSpacer />
+        <div style="min-width:200px;">
+            <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.TRANSNO</MudText>
+        </div>
+    </div>
+</div>
+
+<style>
+
+</style>
+@code {
+    [Parameter] public string Width { get; set; } = "100%"; // Lebar default 80%
+    [Parameter] public string Height { get; set; } = "100%"; // Tinggi default 80%
+    public static string WHSEID = "";
+    public static string DATE1 = "";
+    public static string DATE2 = "";
+    private bool dense = true;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private detailprosespickingCS selectedItem1 = null;
+    private HashSet<detailprosespickingCS> selectedItems = new HashSet<detailprosespickingCS>();
+    private List<detailprosespickingCS> Elements = new List<detailprosespickingCS>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        WHSEID = LoginModuleAtribut.Facility;
+        DATE1 = DateTime.Now.ToString("yyyy-MM-dd");
+        DATE2 = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+
+        var CSdalamkota = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/OUTBOUND/CHECK&PACK/12/wmwhse4/DALAM KOTA/{DATE1}/{DATE2}/GRW/");
+        var valueCSdalamkota = await CSdalamkota.Content.ReadAsStringAsync();
+        Elements = JsonConvert.DeserializeObject<List<detailprosespickingCS>>(valueCSdalamkota);
+    }
+
+    private bool FilterFunc1(detailprosespickingCS detailprosespickingCS) => FilterFunc(detailprosespickingCS, searchString1);
+
+    private bool FilterFunc(detailprosespickingCS detailprosespickingCS, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (detailprosespickingCS.TRANSNO.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (detailprosespickingCS.Keterangan.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{detailprosespickingCS.Orderkey} {detailprosespickingCS.Keterangan} {detailprosespickingCS.TRANSNO}".Contains(searchString))
+            return true;
+        return false;
+    }
+}

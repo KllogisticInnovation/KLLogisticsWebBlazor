@@ -1,0 +1,615 @@
+﻿@layout MainLayout
+@page "/Home"
+@using System.Drawing
+@using KLLogisticsWebBlazor.Config;
+@using KLLogisticsWebBlazor.Pages.CONTENT_CLICK.INBOUND;
+@using Newtonsoft.Json;
+@using System.Net;
+@inject HttpClient Http
+@inject IDialogService DialogService
+
+
+
+<PageTitle>Index</PageTitle>
+<MudTabs Elevation="2" Color="MudBlazor.Color.Secondary" Rounded="true" Centered="true" Class="my-6 Inb-Tabs">
+    <div class="datepicker">
+        <SfDateTimePicker TValue="DateTime?" Value="@DateValue" Placeholder="Select a date and time" Format="yyyy-MM-dd">
+            <DateTimePickerEvents TValue="DateTime?" ValueChange="@onChange">
+            </DateTimePickerEvents>
+        </SfDateTimePicker>
+    </div>
+    <div class="datepicker-btn">
+        <button type="submit" onclick="@Refresh_btn">REFRESH</button>
+    </div>
+    <MudTabPanel Icon="fas fa-truck-fast" Text="UNLOADING" BadgeColor="MudBlazor.Color.Error">
+
+        <div class="Grid-Panel-1">
+            <div class="Grid-Container-1">
+
+                <div class="Grid-Item-1" onclick="@ShowPlanImport">
+                    <i class="fa-solid fa-truck-front"></i>
+                    <h4>PLAN IMPORT
+                        <br />
+                        <p>@Import <a>CONTAINER</a></p>
+                    </h4>
+                </div>
+                <div class="Grid-Item-1">
+                    <i class="fa-solid fa-truck"></i>                    
+                    <h4>
+                        PLAN LOCAL
+                        <br />
+                        <p>@local <a>ARMADA</a></p>
+                    </h4>
+
+                </div>
+                <div class="Grid-Item-1">
+                    <i class="fa-solid fa-users"></i>
+                    <h4>
+                        PLAN MPP
+                        <br />
+                        <p>10</p>
+                    </h4>
+
+                </div>
+                <div class="Grid-Item-1">
+                    <i class="fa-solid fa-dolly"></i>
+                    <h4>
+                        PLAN MHE
+                        <br />
+                        <p>10</p>
+                    </h4>
+
+                </div>
+                <div class="Grid-Item-1">
+                    <i class="fa-solid fa-mobile-retro"></i>
+                    <h4>
+                        PLAN RF
+                        <br />
+                        <p>10</p>
+                    </h4>
+
+                </div>
+            </div>
+            <div class="Grid-Container-2">
+                <div class="Grid-Item-2" @onclick="WorkingProgressClick">
+                    <div class="Header-Grid-Item-2">
+                        <a>WORKING PROGRESS</a>
+                    </div>
+                    <div class="Card-Body-Chart">
+                        <SfChart Width="800px" Background="#00000000">
+                        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                                               LabelIntersectAction="Syncfusion.Blazor.Charts.LabelIntersectAction.Wrap">
+                                
+                        </ChartPrimaryXAxis>
+                        <ChartSeriesCollection>
+                                <ChartSeries DataSource="@inbound_Working_Processes_local" Name="LOCAL" XName="LIST_PROCESS" YName="VALUE" Opacity="1" ColumnSpacing="0.2" ColumnWidth="0.7" DashArray="5,5" PointColorMapping="FILL" Type="ChartSeriesType.Bar">
+                                    <ChartMarker>
+                                        <ChartDataLabel Visible="true" Fill="#e4e4e4" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
+                                    </ChartMarker>
+                            </ChartSeries>
+                                <ChartSeries DataSource="@inbound_Working_Processes_import" Name="IMPORT" XName="LIST_PROCESS" YName="VALUE" Opacity="1" ColumnSpacing="0.2" DashArray="5,5" PointColorMapping="FILL" Type="ChartSeriesType.Bar">
+                                    <ChartMarker>
+                                        <ChartDataLabel Visible="true" Fill="#e4e4e4" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
+                                    </ChartMarker>
+                            </ChartSeries>
+                        </ChartSeriesCollection>
+
+                        <ChartLegendSettings Visible="true" Position="Syncfusion.Blazor.Charts.LegendPosition.Custom">
+                            <ChartLocation X="620" Y="5" />
+                        </ChartLegendSettings>
+                    </SfChart>
+                    </div>
+@*                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th class="text-center">LIST PROCESS</th>
+                                <th class="text-center">VALUE</th>
+                                <th class="text-center">PROCESS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in inbound_Working_Processes_import)
+                            {
+                                <tr>
+                                    <td >@(item != null ? item.LIST_PROCESS : "null")</td>
+                                    <td class="text-end">@(item != null ? item.VALUE : "null")</td>
+                                    <td>
+                                        @if (item != null)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: @item.VALUE%;" aria-valuenow="@item.VALUE" aria-valuemin="0" aria-valuemax="30"></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+*@
+                </div>
+@*                <div class="Grid-Item-2">
+                    <div class="Header-Grid-Item-2">
+                        <a>WORKING PROCESS LOCAL</a>
+                    </div>
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th class="text-center">LIST PROCESS</th>
+                                <th class="text-center">VALUE</th>
+                                <th class="text-center">PROCESS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in inbound_Working_Processes_local)
+                            {
+                                <tr>
+                                    <td>@(item != null ? item.LIST_PROCESS : "null")</td>
+                                    <td class="text-end">@(item != null ? item.VALUE : "null")</td>
+                                    <td>
+                                        @if (item != null)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: @item.VALUE%;" aria-valuenow="@item.VALUE" aria-valuemin="0" aria-valuemax="10"></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+*@                <div class="Grid-Item-2">
+                    <div class="Header-Grid-Item-2">
+                        <a>ACHIVEMENT</a>
+                    </div>
+                    <div class="Card-Body-Chart">
+                        <SfAccumulationChart Width="360px" Height="460px" Background="#00000000">
+                            <AccumulationChartLegendSettings Visible="true" Position="Syncfusion.Blazor.Charts.LegendPosition.Bottom"></AccumulationChartLegendSettings>
+
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries DataSource="@inbound_Working_Process_Alls" XName="LIST_PROCESS" YName="VALUE" Name="LIST_PROCESS" PointColorMapping="Fill" >
+                                    <AccumulationDataLabelSettings Visible="true" Name="Text"></AccumulationDataLabelSettings>
+                                </AccumulationChartSeries>
+                            </AccumulationChartSeriesCollection>
+                        </SfAccumulationChart>
+                    </div>
+                </div>
+            </div>
+            <div class="Grid-Container-3">
+                <div class="Grid-Item-3_a">
+                    <div class="Header-Grid-Item-2">
+                        <a>PRODUCTIVITY IMPORT</a>
+                    </div>
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th class="text-center">SHIFT</th>
+                                <th class="text-center">TEAM</th>
+                                <th class="text-center">NIK TEAM LEADER</th>
+                                <th class="text-center">NAMA TEAM LEADER</th>
+                                <th class="text-center">TARGET TEAM</th>
+                                <th class="text-center">ACTUAL TEAM</th>
+                                <th class="text-center">LPN RECEIVED</th>
+                                <th class="text-center">PERCENTAGE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (inbound_Productivity_Unlaodings == null)
+                            {
+
+                            }
+                            else
+                            {
+                                @foreach (var item in inbound_Productivity_Unlaodings)
+                                {
+                                    <tr>
+                                        <td>@(item != null ? item.SHIFT : "null")</td>
+                                        <td>@(item != null ? item.TEAM : "null")</td>
+                                        <td>@(item != null ? item.NIK_TEAM_LEADER : "null")</td>
+                                        <td>@(item != null ? item.NAMA_TEAM_LEADER : "null")</td>
+                                        <td class="text-end">@(item != null ? item.TARGET_TEAM : "null") CBM</td>
+                                        <td class="text-end">@(item != null ? item.ACTUAL_TEAM : "null") CBM</td>
+                                        <td class="text-end">@(item != null ? item.LPN : "null") LPN</td>
+                                        <td>
+                                            @if (item != null)
+                                            {
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: @item.PROGRES%;" aria-valuenow="@item.PROGRES" aria-valuemin="0" aria-valuemax="100">@item.PROGRES %</div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+@*                <div class="Grid-Item-3">
+                    <div class="Header-Grid-Item-2">
+                        <a>ACHIVEMENT PRODUCTIVITY</a>
+                    </div>
+                    <SfChart Height="450px" Width="500px">
+                        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" ></ChartPrimaryXAxis>
+                        <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+                        <ChartSeriesCollection>
+                            <ChartSeries DataSource="@inbound_Productivity_Unloading_All" StackingGroup="Group-1" Name="IMPORT HIT"  XName="SHIFT" YName="RESULTS" Fill="#4CAF50" Type="ChartSeriesType.StackingColumn">
+                                <ChartMarker>
+                                    <ChartDataLabel Visible="true" />
+                                </ChartMarker>
+                            </ChartSeries>
+                            <ChartSeries DataSource="@inbound_Productivity_Unloading_All" StackingGroup="Group-1" Name="IMPORT MISS" XName="SHIFT" YName="PROCESS" Fill="#F44336" Type="ChartSeriesType.StackingColumn">
+                                <ChartMarker>
+                                    <ChartDataLabel Visible="true" />
+                                </ChartMarker>
+                            </ChartSeries>                           
+                        </ChartSeriesCollection>
+                        <ChartLegendSettings Visible="true" Position="Syncfusion.Blazor.Charts.LegendPosition.Top">
+                        </ChartLegendSettings>
+                    </SfChart>
+                </div>
+*@            </div>
+        </div>
+    </div>
+    </MudTabPanel>
+    
+    <MudTabPanel Icon="fas fa-truck-fast" Text="PUTAWAY" BadgeColor="MudBlazor.Color.Error">
+        <div class="Grid-Panel-2">
+            <div class="Grid-Container-4">
+                <div class="Grid-Item-putaway-1">
+                    <i class="fa-solid fa-truck-front"></i>
+                    <h4>
+                        PLAN PUTAWAY
+                        <br />
+                        <p>29 <a>LPN</a></p>
+                    </h4>
+
+                </div> 
+                <div class="Grid-Item-putaway-1">
+                    <i class="fa-solid fa-truck-front"></i>
+                    <h4>
+                        PLAN MPP
+                        <br />
+                        <p>29 <a></a></p>
+                    </h4>
+
+                </div>
+                <div class="Grid-Item-putaway-1">
+                    <i class="fa-solid fa-mobile-retro"></i>
+                    <h4>
+                        PLAN RF
+                        <br />
+                        <p>10</p>
+                    </h4>
+
+                </div>
+            </div>
+      </div>
+
+    </MudTabPanel>
+</MudTabs>
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    //private Userapps[]? userapps;
+    //private List<ContSum>? Getdata = new List<ContSum>();
+    public List<Inbound_Working_Process_Import>? inbound_Working_Processes_import = new List<Inbound_Working_Process_Import>();
+    public List<Inbound_Working_Process_Local>? inbound_Working_Processes_local = new List<Inbound_Working_Process_Local>();
+    public Inbound_Working_Process_All[]? inbound_Working_Process_Alls;
+    public List<Inbound_Productivity_Unloading>? inbound_Productivity_Unlaodings = new List<Inbound_Productivity_Unloading>();
+    public Inbound_Productivity_Unloading_All[]? inbound_Productivity_Unloading_All;
+    public List<PlanningInbound>? planningInbounds = new List<PlanningInbound>();
+    public DateTime? DateValue { get; set; } = DateTime.Now;
+    public string Import;
+    public string local;
+    bool license_accepted = false;
+    private bool Loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await GetInboundPlanning();
+        await GetWorkingProcessImport();
+        await GetWorkingProcessLocal();
+        await GetWorkingProcessAll();
+        await GetProductivityUnloading();
+        //await GetProductivityImportAll();
+
+    }
+    private void onChange(Syncfusion.Blazor.Calendars.ChangedEventArgs<DateTime?> args)
+    {
+        DateValue = args.Value;
+        StateHasChanged();
+    }
+
+    protected async Task Refresh_btn(Microsoft.AspNetCore.Components.Web.MouseEventArgs mouseEventArgs)
+    {
+    backhere:
+        if (DateValue == null)
+        {
+            goto backhere;
+        }
+        else
+        {
+            Stringclass.SaveDatenow = DateValue.Value.ToString("yyyy-MM-dd");
+        }
+        await base.OnInitializedAsync();
+
+        await GetInboundPlanning();
+        await GetWorkingProcessImport();
+        await GetWorkingProcessLocal();
+        await GetWorkingProcessAll();
+        await GetProductivityUnloading();
+        //await GetProductivityImportAll();
+
+    }
+    public async Task GetInboundPlanning()
+    {
+        Loading = true;
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            //string Date = DateTime.Now.ToString("yyyy-MM-dd");
+            string Date = DateValue.Value.ToString("yyyy-MM-dd");
+            var Get_Inbound_Planning = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/InboundSpRunning/&aqoonsiHCIJBK/&TAARIIKHDA{Date}/&XULASHADATALOImport/&PARAAMETER1/");
+            if (Get_Inbound_Planning.IsSuccessStatusCode == true)
+            {
+                var Inbound_Planning_Convert = await Get_Inbound_Planning.Content.ReadAsStringAsync();
+
+                if (Inbound_Planning_Convert == null)
+                {
+                    goto backhere;
+                }
+                else
+                {
+                    planningInbounds = JsonConvert.DeserializeObject<List<PlanningInbound>>(Inbound_Planning_Convert);
+
+
+                    if (planningInbounds == null)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (var item in planningInbounds)
+                        {
+                            Import = item.IMPORT.ToString();
+                            local = item.LOCAL.ToString();
+                        }
+                        Loading = false;
+                    }
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+        }
+    }
+
+    public async Task GetWorkingProcessImport()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            //string Date = DateTime.Now.ToString("yyyy-MM-dd");
+            string Date = DateValue.Value.ToString("yyyy-MM-dd");
+            var Get_Inbound_Import = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/InboundSpRunning/&aqoonsiHCIJBK/&TAARIIKHDA{Date}/&XULASHADATALOImport/&PARAAMETER2/");
+            if (Get_Inbound_Import.IsSuccessStatusCode == true)
+            {
+                var Inbound_Import_Convert = await Get_Inbound_Import.Content.ReadAsStringAsync();
+
+                if (Inbound_Import_Convert == null)
+                {
+                    goto backhere;
+                }
+                else
+                {
+                    inbound_Working_Processes_import = JsonConvert.DeserializeObject<List<Inbound_Working_Process_Import>>(Inbound_Import_Convert);
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+        }
+
+    }
+    public async Task GetWorkingProcessLocal()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            //string Date = DateTime.Now.ToString("yyyy-MM-dd");
+            string Date = DateValue.Value.ToString("yyyy-MM-dd");
+
+            var Get_Inbound_Local = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/InboundSpRunning/&aqoonsiHCIJBK/&TAARIIKHDA{Date}/&XULASHADATALOLocal/&PARAAMETER2/");
+            if (Get_Inbound_Local.IsSuccessStatusCode == true)
+            {
+                var Inbound_Local_Convert = await Get_Inbound_Local.Content.ReadAsStringAsync();
+
+                if (Inbound_Local_Convert == null)
+                {
+                    goto backhere;
+                }
+                else
+                {
+                    inbound_Working_Processes_local = JsonConvert.DeserializeObject<List<Inbound_Working_Process_Local>>(Inbound_Local_Convert);
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+        }
+
+    }
+    public async Task GetWorkingProcessAll()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            string Date = DateValue.Value.ToString("yyyy-MM-dd");
+            //string Date = DateTime.Now.ToString("yyyy-MM-dd");
+            var Get_Inbound_All = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/InboundSpRunning/&aqoonsiHCIJBK/&TAARIIKHDA{Date}/&XULASHADATALOImport/&PARAAMETER3/");
+            if (Get_Inbound_All.IsSuccessStatusCode == true)
+            {
+                var Inbound_All_Convert = await Get_Inbound_All.Content.ReadAsStringAsync();
+                if (Inbound_All_Convert == null)
+                {
+                    goto backhere;
+                }
+                else
+                {
+                    inbound_Working_Process_Alls = JsonConvert.DeserializeObject<Inbound_Working_Process_All[]>(Inbound_All_Convert);
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+        }
+
+    }
+    public async Task GetProductivityUnloading()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            string Date = DateValue.Value.ToString("yyyy-MM-dd");
+            var Get_Inbound_Productivity_Unloading = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/InboundSpRunning/&aqoonsiHCIJBK/&TAARIIKHDA{Date}/&XULASHADATALOImport/&PARAAMETER5/");
+            if (Get_Inbound_Productivity_Unloading.IsSuccessStatusCode == true)
+            {
+                var Get_Inbound_Productivity_Unloading_Convert = await Get_Inbound_Productivity_Unloading.Content.ReadAsStringAsync();
+                if (Get_Inbound_Productivity_Unloading_Convert == "DATA NOT FOUND")
+                {
+
+                }
+                else
+                {
+                    inbound_Productivity_Unlaodings = JsonConvert.DeserializeObject<List<Inbound_Productivity_Unloading>>(Get_Inbound_Productivity_Unloading_Convert);
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+        }
+
+    }
+    //public async Task GetProductivityImportAll()
+    //{
+    //backhere:
+    //    try
+    //    {
+    //        Http.CancelPendingRequests();
+
+    //        var Get_Inbound_Productivity_Unloading_All = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INBOUND/ProductivityUnloadingAll/WMWHSE4/UNLOADING IMPORT/2023-07-07/");
+    //        if (Get_Inbound_Productivity_Unloading_All.IsSuccessStatusCode == true)
+    //        {
+    //            var Get_Inbound_Productivity_Import_All_Convert = await Get_Inbound_Productivity_Unloading_All.Content.ReadAsStringAsync();
+    //            inbound_Productivity_Unloading_All = JsonConvert.DeserializeObject<Inbound_Productivity_Unloading_All[]>(Get_Inbound_Productivity_Import_All_Convert);
+    //        }
+    //        else
+    //        {
+    //            goto backhere;
+    //        }
+
+    //    }
+    //    catch (WebException ex)
+    //    {
+    //        goto backhere;
+    //    }
+
+    //}
+
+    public async Task ShowPlanImport()
+    {
+    backhere:
+        if (DateValue == null)
+        {
+            goto backhere;
+        }
+        else
+        {
+            Stringclass.SaveDatenow = DateValue.Value.ToString("yyyy-MM-dd");
+        }
+
+        var result = await DialogService.Show<HCI_PlanUnloadingImport>().Result;
+
+        if (!result.Canceled)
+        {
+            license_accepted = (bool)(result.Data ?? false);
+        }
+    }
+
+    public async Task WorkingProgressClick()
+    {
+    backhere:
+        if (DateValue == null)
+        {
+            goto backhere;
+        }
+        else
+        {
+            Stringclass.SaveDatenow = DateValue.Value.ToString("yyyy-MM-dd");
+        }
+
+        var result = await DialogService.Show<HCI_DetailWorkLoadProgress>().Result;
+
+        if (!result.Canceled)
+        {
+            license_accepted = (bool)(result.Data ?? false);
+        }
+
+    }
+}

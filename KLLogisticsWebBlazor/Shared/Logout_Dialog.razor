@@ -1,0 +1,45 @@
+﻿@inject IJSRuntime jsRuntime
+@inject NavigationManager Navigation
+
+<MudDialog Style="border-radius:15px;">
+    <DialogContent>
+        <MudContainer Style="height: 50px; width: 500px;">
+            <MudText Style="text-align:center; font-size:22px; margin:auto; ">@ContentText</MudText>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="MudBlazor.Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public string ContentText { get; set; }
+
+    [Parameter] public string ButtonText { get; set; }
+
+    [Parameter] public Color Color { get; set; }
+
+    async void Submit() 
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+        await Delete();
+        Navigation.NavigateTo("");
+    }
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    public async Task Delete()
+    {
+        await jsRuntime.InvokeAsync<string>("localStorage.removeItem", "Username");
+        await jsRuntime.InvokeAsync<string>("localStorage.removeItem", "Userid");
+        await jsRuntime.InvokeAsync<string>("localStorage.removeItem", "Facility");
+        await jsRuntime.InvokeAsync<string>("localStorage.removeItem", "BusinesUnit");
+    }
+
+}
+

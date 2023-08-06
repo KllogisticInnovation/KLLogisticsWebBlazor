@@ -1,0 +1,123 @@
+﻿@inherits LayoutComponentBase
+@using KLLogisticsWebBlazor.Config
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime jsRuntime
+@using System.Timers
+@implements IDisposable
+@using BrowserInterop.Geolocation;
+@using BrowserInterop.Extensions;
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.Large"
+                   CloseButton="true"
+                   DisableBackdropClick="true"
+                   NoHeader="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true" />
+<MudSnackbarProvider />
+
+<div class="page prevent-select">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <div class="box-header">
+                <span class="e-icons e-user"></span>
+                <h7 class="label">HI,@myname</h7> <br />
+            </div>
+            <div class="box-header">
+                <span class="e-icons e-header"></span>
+                <h7 class="label">@Businesunit</h7> <br />
+            </div>
+            <div class="box-header">
+                <span class="e-icons e-user-defined"></span>
+                <h7 class="label">@whseid</h7>
+            </div>
+            <div class="box-header">
+                <span class="e-icons e-location"></span>
+                <h7 class="label">@Geoloc</h7>
+            </div>
+            <div class="box-header">
+                <span class="e-icons e-timeline-today"></span>
+                <h7 class="label">@time</h7>
+            </div>
+            <div class="ms-auto">
+                <a class="about e-icons e-circle-info " href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
+            </div>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code{
+    public static string? whseid { get; set; }
+    public static string? Businesunit { get; set; }
+    public static string? myname { get; set; }
+    string time = DateTime.Now.ToString("F");
+    private Timer? secondsTimer;
+    public static string Geoloc = "";
+    public WindowNavigatorGeolocation? geolocationWrapper ;
+    public GeolocationPosition? currentPosition ;
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = Colors.Grey.Darken4,
+                Secondary = Colors.Grey.Darken1,
+                AppbarBackground = Colors.Grey.Darken1,
+                //Define other properties here.
+            },
+
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        LoginModuleAtribut.Facility = whseid;
+        secondsTimer = new Timer(1000);
+        secondsTimer.Enabled = true;
+        secondsTimer.AutoReset = true;
+        secondsTimer.Elapsed += (sender, e) => UpdateTime();
+
+        whseid = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "Facility");
+        myname = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "Username");
+        Businesunit = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "BusinesUnit");
+
+        //####GEOLOCATION####
+        var window = await jsRuntime.Window();
+        var navigator = await window.Navigator();
+        geolocationWrapper = navigator.Geolocation;
+
+        currentPosition = (await geolocationWrapper.GetCurrentPosition(new PositionOptions()
+            {
+                EnableHighAccuracy = true,
+                MaximumAgeTimeSpan = TimeSpan.FromHours(1),
+                TimeoutTimeSpan = TimeSpan.FromMinutes(1)
+            })).Location;
+
+        Geoloc = currentPosition.Coords.Longitude + "," + currentPosition.Coords.Latitude;
+
+
+
+    }
+
+    private void UpdateTime()
+    {
+        time = DateTime.Now.ToString("F");
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+    public void Dispose()
+    {
+        secondsTimer?.Dispose();
+    }
+}

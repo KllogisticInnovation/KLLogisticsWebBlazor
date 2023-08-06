@@ -1,0 +1,257 @@
+﻿@layout LoginLayout
+@page "/"
+@inject IJSRuntime jsRuntime
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@using KLLogisticsWebBlazor.Config;
+@using KLLogisticsWebBlazor.Models;
+@using Newtonsoft.Json
+@using System.Net.Http.Headers;
+@using System.Net;
+
+
+<html>
+<head>
+
+</head>
+<body>
+	<form>
+		<div class="body"></div>
+		<div class="grad"></div>
+		<div class="header">
+			<img class="card-img" src="/img/logo1.png" />
+@*						<div>Site<span>Random</span></div>
+*@		</div>
+		<br>
+		<div class="login">
+			<label class="form-label">WELCOME</label>
+			<input type="text" placeholder="UserId" id="Usertxt" value="@Useridtxt" @oninput="Changevalue" @onkeydown="keydown"><br>
+			<input type="text" placeholder="UserName" id="Usernametxt" value="@Username" readonly="readonly"/> <br>
+			<input type="password" placeholder="Password" id="Passwordtxt" value="@Passwordtxt" @oninput="PasswordValue"/> <br>
+			<select title="Select Facility" id="Facilittxt" name="Facilittxt" @bind="Businesunit">
+				<option value="Select">Select Facility</option>
+				@if (Facilities == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                @foreach (var Item in Facilities)
+				{
+					<option value="@Item.SITE_NAME">@Item.SITE_NAME</option>
+				}
+			</select>
+
+			<input type="button" value="Login" @onclick="Loginbtn">
+		</div>
+	</form>
+</body>
+</html>
+
+@code {
+
+	public static string? KeyPressed { get; set; }
+	public static string? Useridtxt { get; set; }
+	public static string? Username { get; set; }
+	public static string? Passwordtxt { get; set; }
+	public static string? Businesunit { get; set; }
+	public static string? Whseid { get; set; }
+
+	public IEnumerable<WebFacility>? Facilities = Enumerable.Empty<WebFacility>();
+
+	public List<ApiModels>? apiModels = new List<ApiModels>();
+	protected override async Task OnInitializedAsync()
+	{
+
+		await GetApiUrl();
+		await GetFacility();
+
+		string checkuser = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "Username");
+
+		if (checkuser.ToString() != null)
+		{
+			Navigation.NavigateTo("Home");
+		}
+	}
+	public async Task GetApiUrl()
+	{
+	backhere:
+		try
+		{
+			Http.CancelPendingRequests();
+
+			var Get_api = await Http.GetAsync("https://shandibima.github.io/API/API_URL.JSON");
+			if (Get_api.IsSuccessStatusCode == true)
+			{
+				var Get_Api_Convert = await Get_api.Content.ReadAsStringAsync();
+				apiModels = JsonConvert.DeserializeObject<List<ApiModels>>(Get_Api_Convert);
+
+				if (apiModels == null)
+				{
+					goto backhere;
+				}
+				else
+				{
+					foreach (var item in apiModels)
+					{
+						UrlModule.BaseModuleUrl = item.Api_Url.ToString();
+					}
+
+				}
+			}
+				else
+				{
+					goto backhere;
+				}
+
+			}
+			catch (WebException ex)
+			{
+				goto backhere;
+			}
+
+	}
+	public async Task Changevalue(Microsoft.AspNetCore.Components.ChangeEventArgs changeEvent)
+	{
+		Useridtxt = (string?)changeEvent.Value;
+
+		if ((Useridtxt.ToString().Length > 4) && (Useridtxt.ToString().Length == 6) && (Useridtxt.ToString().Length < 7))
+		{
+			await GetUsername();
+		}
+
+	}
+	public void PasswordValue(Microsoft.AspNetCore.Components.ChangeEventArgs changeEvent)
+	{
+		Passwordtxt = (string?)changeEvent.Value;
+	}
+	public async Task keydown(KeyboardEventArgs args)
+	{
+		if (args.Key == "Enter" || args.Key == "NumpadEnter" || args.Key == "Next")
+		{
+			await GetUsername();
+		}
+		else
+		{
+
+		}
+	}
+	public async Task GetUsername()
+	{
+		var Response = await Http.GetAsync(UrlModule.BaseModuleUrl+$"api/userapps/Getusername/{Useridtxt}");
+		var value = Response.Content.ReadAsStringAsync();
+		var result = value.Result.ToString();
+		Username = result;
+		await jsRuntime.InvokeVoidAsync("focusById","Passwordtxt");
+	}
+
+	public async Task GetFacility()
+	{
+	backhere:
+		try
+		{
+			Http.CancelPendingRequests();
+			var Get_Facilities = await Http.GetAsync(UrlModule.BaseModuleUrl + $"api/Facility/GetWebFacility");
+			if (Get_Facilities.IsSuccessStatusCode == true)
+			{
+				var Get_Facilities_Convert = await Get_Facilities.Content.ReadAsStringAsync();
+				if (Get_Facilities_Convert == null)
+				{
+					goto backhere;
+				}
+				else
+				{
+					Facilities = JsonConvert.DeserializeObject<WebFacility[]>(Get_Facilities_Convert);
+				}
+			}
+			else
+			{
+				goto backhere;
+			}
+		}
+		catch (WebException ex)
+		{
+			goto backhere;
+		}
+	}
+
+	public async Task ValidateLogin()
+	{
+		if (Passwordtxt == "" || Passwordtxt == null)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please Insert Userid and Password !!"); // Alert
+		}
+		else
+		{
+			GetLogin getLogin = new GetLogin
+				{
+					Userid = Useridtxt,
+					Password = Passwordtxt
+				};
+			Http.DefaultRequestHeaders.Accept.Clear();
+			Http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			var Response = await Http.PostAsJsonAsync(UrlModule.BaseModuleUrl + "api/userapps/getlogin", getLogin);
+			var result = Response.Content.ReadAsStringAsync().Result.ToString();
+			var finalresult = result.Substring(1, result.Length - 2);
+			if (Response.IsSuccessStatusCode)
+			{
+				if (finalresult == "Data Found")
+				{
+					if (Businesunit == "Select" || Businesunit == null)
+					{
+						await jsRuntime.InvokeVoidAsync("alert", "Please Select Facility !!"); // Alert
+					}
+					else
+					{
+						await GetBiu();
+
+						LoginModuleAtribut.Userid = Useridtxt;
+						LoginModuleAtribut.Username = Username;
+						LoginModuleAtribut.Password = Passwordtxt;
+						LoginModuleAtribut.Facility = Whseid;
+						LoginModuleAtribut.BusinesUnit = Businesunit;
+						await SaveLoginState();
+
+						Navigation.NavigateTo("Home");
+					}
+				}
+				else
+				{
+					await jsRuntime.InvokeVoidAsync("alert", "User/Password Invalid !!"); // Alert
+
+					//bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"); // Confirm
+					//string prompted = await jsRuntime.InvokeAsync<string>("prompt", "Take some input:"); // Prompt
+				}
+			}
+		}
+
+	}
+
+	public async Task GetBiu()
+	{
+		var Response = await Http.GetAsync(UrlModule.BaseModuleUrl + $"api/Facility/GetBiuName/{Businesunit}");
+		var value = Response.Content.ReadAsStringAsync().Result.ToString();
+		string result = value.Substring(1, value.Length - 2);
+		Whseid = result;
+	}
+
+	public async Task SaveLoginState()
+	{
+		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "Userid", Useridtxt);
+		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "Username", Username);
+		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "Facility", Whseid);
+		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "BusinesUnit", Businesunit);
+	}
+	public async Task Loginbtn()
+	{
+		if (Useridtxt == "" || Useridtxt == null)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please Insert Userid and Password !!"); // Alert
+		}
+		else
+		{
+			await ValidateLogin();
+		}
+	}
+
+
+}

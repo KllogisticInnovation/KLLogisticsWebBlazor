@@ -1,0 +1,991 @@
+﻿@layout MainLayout
+@page "/HCI/D_INVENTORY"
+@inject HttpClient Http
+@inject IJSRuntime jsRuntime
+@inject IDialogService DialogService
+@inject HttpClient httpClient;
+@inject NavigationManager Navigation;
+@inject IConfiguration Configuration;
+
+@using System.Data.SqlClient
+@using MudBlazor;
+@using Newtonsoft.Json;
+@using System.Net.Http.Headers;
+@using KLLogisticsWebBlazor.Config;
+@using KLLogisticsWebBlazor.Models;
+@using System.Net.Http.Json;
+@using MudBlazor.Examples.Data.Models
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Charts
+@using System.Net;
+@using Syncfusion.Blazor.Popups
+
+<MudTabs Elevation="2" Rounded="true" Centered="true" Color="@Color.Dark" ApplyEffectsToContainer="true" PanelClass="pa-4">
+    <MudTabPanel Text="Cycle Count">
+
+        <div class="container-fluid mt-2">
+
+            <div class="row mb-6">
+                <!-- Kolom Pertama -->
+                <div class="col-3  py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons e-repeat me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Plan Cycle Count
+                                    <div></div>
+                                </div>
+                                @{
+                                    if (DataDaily != null)
+                                    {
+                                        int? sumTarget = DataDaily.Sum(fetch => fetch.Target);
+                                        int sumTargetValue = sumTarget.HasValue ? sumTarget.Value : 0;
+                                        <div class="text-muted text-right">@sumTargetValue</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Kolom Kedua -->
+                <div class="col-3 py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-users me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Plan MPP
+                                    <div></div>
+                                </div>
+                                @{
+                                    if (DataDaily != null)
+                                    {
+                                        int countUserID = DataDaily.Count();
+                                        <div class="text-muted text-right">@countUserID</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Ketiga -->
+                <div class="col-3 py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-dolly me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Plan MHE
+                                    <div></div>
+                                </div>
+                                
+                                        <div class="text-muted text-right">1</div>
+                                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Kolom Keempat -->
+                <div class="col-3 py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-mobile-retro me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Plan RF
+                                    <div></div>
+                                </div>
+                                @{
+                                    if (DataDaily != null)
+                                    {
+                                        int countUserID = DataDaily.Count();
+                                        <div class="text-muted text-right">@countUserID</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pembatas -->
+            <!-- Baris Kedua -->
+            <div class="row mb-6">
+                <!-- Kolom Pertama -->
+                <div class="col-7 py-2">
+                    <div class="card card-sm">
+                        <div class="card-header">
+                            <h6 class="card-title">Working Progress Cycle Count</h6>
+                        </div>
+                        <table class="table table-bordered mt-3 table-pertama">
+                            <thead>
+                                <tr>
+                                    <th class="text-center ">User ID</th>
+                                    <th class="text-center ">Nama</th>
+                                    <th class="text-center ">Target</th>
+                                    <th class="text-center ">Actual</th>
+                                    <th class="text-center ">% Achieve</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 @if (DataDaily == null)
+                                {
+
+                                }
+                                else
+                                {
+                                @foreach (var Fetch in DataDaily)
+                                {
+                                        double? progressPercentage = Fetch.Target != null && Fetch.Target != 0 ? (double)Fetch.Total / Fetch.Target * 100 : null;
+                                <tr class="text-right">
+                                <td class="text-center">@Fetch.UserId</td>
+                                <td class="text-left">@Fetch.Employee_Name</td>
+                                <td>@Fetch.Target</td>
+                                <td>@Fetch.Total</td>
+                                            <td>
+                                             @if (progressPercentage != null)
+                                                    {
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: @progressPercentage.Value.ToString("0.##")%;" aria-valuenow="@progressPercentage.Value.ToString("0.##")" aria-valuemin="0" aria-valuemax="100">@progressPercentage.Value.ToString("0.##")%</div>
+                                                    </div>
+                                                    }
+                                                    else
+                                                    {
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                                    </div>
+                                                    }
+                                            </td>
+
+                                </tr>
+                                }
+
+                                }      
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <span class="pagination-text">By Count</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Kolom Kedua -->
+                <div class="col-5 py-2">
+                    <div class="card card-sm ">
+                        <div class="card-header">
+                            <h6 class="card-title" @onclick="ToggleDialog2">Daily Accuracy Cycle Count</h6>
+                        </div>
+                        <div class="card-body" @onclick="ToggleDialog2">
+                         <SfChart Width="100%" Height="245px">
+                                <ChartPrimaryXAxis Title="" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelRotation="20" >
+                                    <ChartTitleStyle FontFamily="Arial" FontWeight="regular" Color="#242327ff" Size="23px">
+                                    </ChartTitleStyle>
+
+                                  
+                                </ChartPrimaryXAxis>
+
+                                <ChartPrimaryYAxis Title="" LabelFormat="{value}" Minimum="0" Maximum="300" Interval="50">
+                                </ChartPrimaryYAxis>
+
+                                <ChartSeriesCollection>
+                                    <ChartSeries DataSource="@DataDaily" Name='HIT' XName="Employee_Name" YName="HIT" Fill="#4CAF50" ColumnSpacing="0.2" ColumnWidth="0.7" Type="ChartSeriesType.Column">
+                                        <ChartMarker>
+                                            <ChartDataLabel Visible="true" Format="#.#" />
+                                        </ChartMarker>
+                                       
+
+                                    </ChartSeries>
+
+                                    <ChartSeries DataSource="@DataDaily" Name='MISS' XName="Employee_Name" YName="MISS" Fill="#F44336" ColumnSpacing="0.2" ColumnWidth="0.7" Type="ChartSeriesType.Column">
+                                        <ChartMarker>
+                                            <ChartDataLabel Visible="true" Format="#.#" />
+                                        </ChartMarker>
+                                    </ChartSeries>
+
+                                </ChartSeriesCollection>
+                                <ChartLegendSettings Visible="true" Position="Syncfusion.Blazor.Charts.LegendPosition.Top">
+
+                                </ChartLegendSettings>
+                            </SfChart>
+
+
+                            @*  <div class="float-right">
+                            <button class="btn btn-primary" style="float : right;" @onclick="ShowPopup">Detail</button>
+                            </div>
+                            @if (showPopup)
+                            {
+                            <div class="modal-overlay"></div>
+                            <div class="modal"  style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1050; overflow: auto;">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content" >
+                            <div class="modal-header">
+                            <h5 class="modal-title">Detail Loc Miss & Hit</h5>
+                            <button type="button" class="close" @onclick="HidePopup">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <!-- Isi tabel di sini -->
+                            <table class="table table-bordered mt-3 table-ketiga">
+                            <thead>
+                            <tr>
+                            <th class="text-center ">Location</th>
+                            <th class="text-center ">Sku</th>
+                            <th class="text-center ">Qty Fisik</th>
+                            <th class="text-center ">Qty System</th>
+                            <th class="text-center ">Adj Qty</th>
+                            <th class="text-center ">Keterangan</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if (DataDailyDetail == null)
+                            {
+
+                            }
+                            else
+                            {
+                            @foreach (var Fetch in DataDailyDetail)
+                            {
+                            <tr class="text-right">
+                            <td class="text-left">@Fetch.Loc</td>
+                            <td class="text-left">@Fetch.SKU</td>
+                            <td>@Fetch.QTY_FISIK</td>
+                            <td>@Fetch.QTY_SISTEM</td>
+                            <td>@Fetch.ADJQTY</td>
+                            <td class="text-left">@Fetch.KETERANGAN </td>
+                            </tr>
+                            }
+
+                            }
+                            </tbody>
+                            </table>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @onclick="HidePopup">Tutup</button>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            }*@
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baris Ketiga -->
+            <div class="row mb-6">
+                <!-- Kolom Pertama -->
+                <div class="col-7 py-2">
+                    <div class="card card-sm ">
+                        <div class="card-header">
+                            <h6 class="card-title">Wall To Wall 1 Bulan</h6>
+                        </div>
+                        <div class ="card-body " >
+                            @if (DataWTW != null && DataWTW.Any())
+                            {
+                                int totalCount = DataWTW.Sum(x => x.Counted ?? 0);
+                                int totalLocasi = DataWTW.Sum(x => x.Location ?? 0);
+                                double totalCountPercentage = totalLocasi != 0 ? (double)totalCount / totalLocasi * 100 : 0;
+                                <div class="text-muted text-center" style="margin-bottom: 20px; "><strong>%Wall To Wall: @totalCountPercentage.ToString("#.#")%</strong></div>
+
+                                
+                            }
+
+                            <MudDataGrid Items="@DataWTW" Filterable="true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" Height="380px" Dense="@_dense" Striped="@_striped" Bordered="@_bordered">
+                                <Columns>
+                                    <PropertyColumn Property="x => x.Area" Title="Area" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px;text-align: left;" />
+                                    <PropertyColumn Property="x => x.Location" Title="Total Loc" Filterable="false" HeaderStyle="font-size: 12px; text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.Counted" Title="Count" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.Not_Counted" Title="Not Count" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.Counted_Percent" Title="%Count" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" Format="#.#'%'" CellStyle="font-size: 11px; " />
+                                </Columns>
+
+                                <PagerContent>
+                                    <MudDataGridPager T="Table_WTW" PageSizeOptions=@(new int[] {6, 12, 24}) />
+                                </PagerContent>
+                            </MudDataGrid>
+
+                       
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Kolom Kedua -->
+                <div class="col-5 py-2">
+                    <div class="card card-sm ">
+                        <div class="card-header">
+                            <h6 class="card-title" @onclick="ToggleDialog">Accuracy All Area By SKU</h6>
+                        </div>
+                        <div class="card-body " @onclick="ToggleDialog">
+                            @{
+                                if (DataAccuracy != null && DataAccuracy.Count > 0)
+                                {
+                                    double averageAccuracy = DataAccuracy.Average(acc => (double)acc.Accuracy);
+
+                                    <div class="text-muted text-center"><strong>Average Accuracy: @averageAccuracy.ToString("#.#")%</strong></div>
+                                }
+                            }
+
+
+
+                            <SfChart Width="100%" Height="450px">
+                                <ChartPrimaryXAxis Title="AREA"  ValueType="Syncfusion.Blazor.Charts.ValueType.Category ">
+                                    <ChartTitleStyle FontFamily="Arial" FontWeight="regular" Color="#242327ff" Size="23px">
+                                </ChartTitleStyle>       
+                                </ChartPrimaryXAxis>
+
+                                <ChartPrimaryYAxis Title="" LabelFormat="{value}%" Minimum="0" Maximum="125" Interval="30">
+                                </ChartPrimaryYAxis>
+                                <ChartSeriesCollection>
+                                    <ChartSeries DataSource="@DataAccuracy" Name='HIT' XName="Area" YName="Accuracy" Fill="#4CAF50" ColumnSpacing="0.2" ColumnWidth="0.7" Type="ChartSeriesType.StackingBar">
+                                        <ChartMarker>
+                                            <ChartDataLabel Visible="true" Format="#.#'%'" />
+                                        </ChartMarker>
+                                    
+                                    </ChartSeries>
+
+                                    <ChartSeries DataSource="@DataAccuracy" Name='MISS' XName="Area" YName="Accuracy2" Fill="#F44336" ColumnSpacing="0.2" ColumnWidth="0.7" Type="ChartSeriesType.StackingBar">
+                                        <ChartMarker>
+                                            <ChartDataLabel Visible="true" Format="#.#'%'" />
+                                        </ChartMarker>
+                                    </ChartSeries>
+
+                                </ChartSeriesCollection>
+                                <ChartLegendSettings Visible="true" Position="Syncfusion.Blazor.Charts.LegendPosition.Top">
+
+                                </ChartLegendSettings>
+                            </SfChart>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <SfDialog @ref="dialogRef" Width="850px" ShowCloseIcon="true" IsModal="true" @bind-Visible="isDialogVisible">
+            <DialogTemplates>
+                <Content>
+                     <MudDataGrid Items="@DataAccuracyDetail" Filterable="true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" Height="380px" Dense="@_dense" Striped="@_striped" Bordered="@_bordered">
+                        
+                         
+                         <Columns>
+                            <PropertyColumn Property="x => x.AREAKEY" Title="Area" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px;text-align: left;" />
+                            <PropertyColumn Property="x => x.LOC" Title="Loc" Filterable="false" HeaderStyle="font-size: 12px; text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.SKU" Title="SKU" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.QTY" Title="Qty" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.SYSQTY" Title="SysQty" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;"  CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.ADJQTY" Title="AdjQty" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;"  CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.ADDDATE" Title="Adddate" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;"  CellStyle="font-size: 11px; " />   
+                        </Columns>
+
+                        <PagerContent>
+                            <MudDataGridPager T="Table_Accuracy_SKU_Detail" PageSizeOptions=@(new int[] {6, 12, 24}) />
+                        </PagerContent>
+                    </MudDataGrid>
+                </Content>
+            </DialogTemplates>
+        </SfDialog>
+        <SfDialog @ref="dialogRef2" Width="850px" ShowCloseIcon="true" IsModal="true" @bind-Visible="isDialogVisible2">
+            <DialogTemplates>
+                <Content>
+                    <MudDataGrid Items="@DataDailyDetail" Filterable="true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" Height="380px" Dense="@_dense" Striped="@_striped" Bordered="@_bordered">
+                        <Columns>
+                            <PropertyColumn Property="x => x.LOC" Title="Location" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px;text-align: left;" />
+                            <PropertyColumn Property="x => x.SKU" Title="SKU" Filterable="false" HeaderStyle="font-size: 12px; text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.QTY_Fisik" Title="Qty Fisik" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.QTY_Sistem" Title="Qty System" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.ADJQTY" Title="Adj Qty" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                            <PropertyColumn Property="x => x.KETERANGAN" Title="Keterangan" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                        </Columns>
+
+                        <PagerContent>
+                            <MudDataGridPager T="Table_Daily_Detail" PageSizeOptions=@(new int[] {6, 12, 24}) />
+                        </PagerContent>
+                    </MudDataGrid>
+                </Content>
+            </DialogTemplates>
+        </SfDialog>
+      
+
+    </MudTabPanel>
+
+
+
+    <!-- INI FORM ADF -->
+
+
+    <MudTabPanel Text="ADF">
+        <div class="container-fluid mt-2">
+
+            <div class="row mb-6">
+                <!-- Kolom Pertama -->
+                <div class="col-4  py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-list me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Barang DMG 
+                                    <div>
+                                        By SKU
+                                    </div>
+                                </div>
+                                @{
+                                    if (DataDaily != null)
+                                    {
+                                        int? sumTarget = DataDaily.Sum(fetch => fetch.Target);
+                                        int sumTargetValue = sumTarget.HasValue ? sumTarget.Value : 0;
+                                        <div class="text-muted text-right">@sumTargetValue</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Kolom Kedua -->
+                <div class="col-4 py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-list me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Barang DMG
+                                    <div>
+                                        By Qty
+                                    </div>
+                                </div>
+                                @{
+                                    if (DataDaily != null)
+                                    {
+                                        int countUserID = DataDaily.Count();
+                                        <div class="text-muted text-right">@countUserID</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Ketiga -->
+                <div class="col-4 py-2 ">
+                    <div class="card card-sm h-100">
+                        <div class="d-flex align-items-center card-body">
+                            <span class="e-icons fa-solid fa-clipboard-list me-6"></span>
+                            <div class="me-3 lh-sm">
+                                <div class="strong">
+                                    Form ADF 
+                                    <div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="text-muted text-right">1</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                
+                
+            </div>
+
+            <!-- Pembatas -->
+            <!-- Baris Kedua A-->
+            <div class="row mb-6">
+                <!-- Kolom Pertama -->
+                <div class="col-8 py-2">
+                    <div class="card card-sm">
+                        <div class="card-header">
+                            <h6 class="card-title">Monitoring Status Barang ADF by LPN</h6>
+                        </div>
+                        <div class="card-body ">
+                        
+                                <SfChart Title="Status ADF" Width="100%" Height="300px" >
+                                    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category">
+                                    </ChartPrimaryXAxis>
+                               
+                                    <ChartSeriesCollection>
+                                    <ChartSeries DataSource="@MedalDetails" XName="Country" YName="Gold" Fill="#4CAF50" Type="ChartSeriesType.Bar">
+                                        
+                                            <ChartMarker>
+                                            <ChartDataLabel Visible="true" />
+                                            </ChartMarker>
+                                            
+                                        </ChartSeries>
+                                    <ChartSeries DataSource="@MedalDetails" XName="Country1" YName="Gold" Fill="#F44336" Type="ChartSeriesType.Bar">
+
+                                        <ChartMarker>
+                                            <ChartDataLabel Visible="true" />
+                                        </ChartMarker>
+
+                                    </ChartSeries>
+                                 
+                                    </ChartSeriesCollection>  
+                                 </SfChart>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <!-- Kolom Kedua -->
+                <div class="col-4 py-2">
+                    <div class="card card-sm ">
+                        <div class="card-header">
+                            <h6 class="card-title">Pengajuan Barang ADF</h6>
+                        </div>
+                        <div class="card-body">
+                            @*<SfAccumulationChart Height="300px">
+                                <AccumulationChartLegendSettings Visible="true" Position="@Syncfusion.Blazor.Charts.LegendPosition.Bottom"></AccumulationChartLegendSettings>
+
+                                <AccumulationChartSeriesCollection>
+                                    <AccumulationChartSeries DataSource="@StatisticsDetails" XName="Browser" YName="Users" Name="Browser" Radius="100%" InnerRadius="40%" PointColorMapping="Fill">
+                                        <AccumulationDataLabelSettings Visible="true" Name="Text" Position="AccumulationLabelPosition.Inside"></AccumulationDataLabelSettings>
+
+                                    </AccumulationChartSeries>
+                                </AccumulationChartSeriesCollection>
+                            </SfAccumulationChart>*@
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Pembatas -->
+            <!-- Baris Ketiga -->
+            <div class="row mb-6">
+                <div class="col-7 py-2">
+                    <div class="card card-sm">
+                        <div class="card-header">
+                            <h6 class="card-title">Status ADF By LPN</h6>
+                        </div>
+                        <div class="card-body ">
+
+                           
+                            <MudDataGrid Items="@DataStatusADF" Filterable="true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" Height="380px" Dense="@_dense" Striped="@_striped" Bordered="@_bordered">
+                                <Columns>
+                                    <PropertyColumn Property="x => x.Status" Title="Status" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px;text-align: left;" />
+                                    <PropertyColumn Property="x => x.HD" Title="HD" Filterable="false" HeaderStyle="font-size: 12px; text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.PR" Title="PR" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.RC" Title="RC" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.TG" Title="TG" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" Format="#.#'%'" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.Total_ADF" Title="Total" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" Format="#.#'%'" CellStyle="font-size: 11px; " />
+                                
+                                    </Columns>
+
+                                <PagerContent>
+                                    <MudDataGridPager T="Table_StatusADF" PageSizeOptions=@(new int[] {6, 12, 24}) />
+                                </PagerContent>
+                            </MudDataGrid>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-5 py-2">
+                    <div class="card card-sm">
+                        <div class="card-header">
+                            <h6 class="card-title">ADF By SKU Group </h6>
+                        </div>
+                        <div class="card-body ">
+
+                            
+
+                            <MudDataGrid Items="@DataGroupADF" Filterable="true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" Height="380px" Dense="@_dense" Striped="@_striped" Bordered="@_bordered">
+                                <Columns>
+                                    <PropertyColumn Property="x => x.Site" Title="Site" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px;text-align: left;" />
+                                    <PropertyColumn Property="x => x.SKUGROUP" Title="Group" Filterable="false" HeaderStyle="font-size: 12px; text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.DESCR" Title="Descr" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    <PropertyColumn Property="x => x.Total_SKUGroup" Title="Total" Filterable="false" HeaderStyle="font-size: 12px ;text-align: center;" CellStyle="font-size: 11px; " />
+                                    
+                                </Columns>
+
+                                <PagerContent>
+                                    <MudDataGridPager T="Table_GroupADF" PageSizeOptions=@(new int[] {6, 12, 24}) />
+                                </PagerContent>
+                            </MudDataGrid>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+                         
+            
+       
+
+
+
+
+                      
+        </div>
+
+    </MudTabPanel>
+
+
+    <MudTabPanel Text="LPPBDO">
+
+
+    </MudTabPanel>
+    <MudTabPanel Text="Profiling">
+
+    </MudTabPanel>
+
+    <MudTabPanel Text="1007/1009" Disabled="false">
+
+    </MudTabPanel>
+
+
+</MudTabs>
+
+
+
+
+@code {
+
+
+    /// Pop Up Accuracy Daily
+
+    //private bool showPopup = false;
+    //private void HidePopup()
+    //{
+    //    showPopup = false;
+    //}
+    //private void ShowPopup()
+    //{  
+    //        showPopup = true;
+    //}
+
+
+
+    /// Pop Up Accuracy Daily
+
+    private SfDialog dialogRef;
+    private SfDialog dialogRef2;
+    private bool isDialogVisible = false;
+    private bool isDialogVisible2 = false;
+
+    private async Task ToggleDialog()
+    {
+
+        isDialogVisible = !isDialogVisible;
+        if (isDialogVisible)
+        {
+            await dialogRef.Show();
+            await AccuracyDetail();
+        }
+    }
+
+    private async Task ToggleDialog2()
+    { 
+        isDialogVisible2 = !isDialogVisible2;
+        if (isDialogVisible2)
+        {
+            await dialogRef2.Show();
+            await DailyDetail();
+        }
+
+
+    }
+
+    public List<ChartData> MedalDetails = new List<ChartData>
+    {
+        new ChartData{ Country= "Not Approved", Gold=50   },
+        new ChartData{ Country="Approved Discount", Gold=40 },
+        new ChartData{ Country= "Approved WO", Gold=70 },
+        new ChartData{ Country= "Belum Approved", Gold=60},
+        new ChartData{ Country1= "Belum di ADF", Gold=50 }
+
+
+    };
+
+    private List<Table_WTW>? DataWTW = new List<Table_WTW>();
+    private List<Table_Daily>? DataDaily = new List<Table_Daily>();
+    private List<Table_Daily_Detail>? DataDailyDetail = new List<Table_Daily_Detail>();
+    private List<Table_Accuracy_SKU>? DataAccuracy = new List<Table_Accuracy_SKU>();
+    private List<Table_Accuracy_SKU_Detail>? DataAccuracyDetail = new List<Table_Accuracy_SKU_Detail>();
+    private List<Table_StatusADF>? DataStatusADF = new List<Table_StatusADF>();
+    private List<Table_GroupADF>? DataGroupADF = new List<Table_GroupADF>();
+    DataGridFilterMode _filterMode = DataGridFilterMode.Simple;
+    DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.Default;
+    private bool _hover;
+    private bool _dense = false;
+    private bool _striped = true;
+    private bool _bordered = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //await DailyDetail();
+        await WTW();
+        await Daily();
+        await Accuracy();
+        await StatusADF();
+        await GroupADF();
+        //await LoadStatistics();
+
+    }
+
+
+    //// Ini Table ADF
+    public async Task StatusADF()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_statusadf = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_ADF/WMWHSE4/HCI/H014/Table_Status");
+            if (tble_statusadf.IsSuccessStatusCode == true)
+            {
+                var Value_StatusADF = await tble_statusadf.Content.ReadAsStringAsync();
+                DataStatusADF = JsonConvert.DeserializeObject<List<Table_StatusADF>>(Value_StatusADF);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+    public async Task GroupADF()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_groupadf = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_ADF/WMWHSE4/HCI/H014/Table_SKUGROUP");
+            if (tble_groupadf.IsSuccessStatusCode == true)
+            {
+                var Value_GroupADF = await tble_groupadf.Content.ReadAsStringAsync();
+                DataGroupADF = JsonConvert.DeserializeObject<List<Table_GroupADF>>(Value_GroupADF);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+
+    //Ini Tabel WTW HCI
+
+
+    public async Task WTW()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_wtw = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_CC");
+            if (tble_wtw.IsSuccessStatusCode == true)
+            {
+                var Value_WTW = await tble_wtw.Content.ReadAsStringAsync();
+                DataWTW = JsonConvert.DeserializeObject<List<Table_WTW>>(Value_WTW);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+    public async Task Daily()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_daily = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_CYCLECOUNT_DAILY");
+            if (tble_daily.IsSuccessStatusCode == true)
+            {
+                var Value_Daily = await tble_daily.Content.ReadAsStringAsync();
+                DataDaily = JsonConvert.DeserializeObject<List<Table_Daily>>(Value_Daily);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+    public async Task DailyDetail()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_daily_detail = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_CYCLECOUNT_DAILY_Detail");
+            if (tble_daily_detail.IsSuccessStatusCode == true)
+            {
+                var Value_Daily_Detail = await tble_daily_detail.Content.ReadAsStringAsync();
+                if(Value_Daily_Detail == null)
+                {
+
+                }
+                else
+                {
+                    DataDailyDetail = JsonConvert.DeserializeObject<List<Table_Daily_Detail>>(Value_Daily_Detail);
+                }
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+    public async Task Accuracy()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_accuracy = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_ACCURACY_SKU");
+            if (tble_accuracy.IsSuccessStatusCode == true)
+            {
+                var Value_Accuracy = await tble_accuracy.Content.ReadAsStringAsync();
+                DataAccuracy = JsonConvert.DeserializeObject<List<Table_Accuracy_SKU>>(Value_Accuracy);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+
+    public async Task AccuracyDetail()
+    {
+    backhere:
+        try
+        {
+            Http.CancelPendingRequests();
+            var tble_accuracy_detail = await Http.GetAsync(UrlModule.BaseModuleUrl + $"API/HCI/INVENTORY/INVENTORY_ACCURACY_SKU_Detail");
+            if (tble_accuracy_detail.IsSuccessStatusCode == true)
+            {
+                var Value_Accuracy_Detail = await tble_accuracy_detail.Content.ReadAsStringAsync();
+                DataAccuracyDetail = JsonConvert.DeserializeObject<List<Table_Accuracy_SKU_Detail>>(Value_Accuracy_Detail);
+            }
+            else
+            {
+                goto backhere;
+            }
+        }
+        catch (WebException ex)
+        {
+            goto backhere;
+
+        }
+    }
+
+
+    //Mengambil SummaryTotal
+    //public List<Statistics> StatisticsDetails;
+    //private async Task LoadStatistics()
+    //{
+    //    if (DataDaily != null)
+    //    {
+    //        double actualSum = DataDaily.Sum(fetch => fetch.Total) ?? 0;
+    //        double remainingSum = DataDaily.Sum(fetch => fetch.Target - fetch.Total) ?? 0;
+    //        remainingSum = remainingSum < 0 ? 0 : remainingSum;
+
+    //        StatisticsDetails = new List<Statistics>();
+
+    //        if (remainingSum <= 0)
+    //        {
+    //            StatisticsDetails.Add(new Statistics { Browser = "Realized", Users = actualSum, Text = actualSum.ToString(), Fill = "#4CAF50" });
+    //        }
+    //        else
+    //        {
+    //            StatisticsDetails.Add(new Statistics { Browser = "Realized", Users = actualSum, Text = actualSum.ToString(), Fill = "#4CAF50" });
+    //            StatisticsDetails.Add(new Statistics { Browser = "Not Yet", Users = remainingSum, Text = remainingSum.ToString(), Fill = "#F44336" });
+    //        }
+    //    }
+    //}
+
+
+
+    // Mengambil Data Filteran
+
+    //private void HandleDateFilterChange(Microsoft.AspNetCore.Components.ChangeEventArgs e)
+    //{
+    //    string selectedValue = e.Value.ToString();
+
+    //    if (selectedValue == "Today")
+    //    {
+    //        // Mengambil data hari ini dari DataAccuracy
+    //        string today = DateTime.Today.ToString("yyyy-MM-dd");
+    //        DataAccuracy = DataAccuracy.Where(acc => acc.Date.ToString("yyyy-MM-dd") == today).ToList();
+    //    }
+    //    else if (selectedValue == "Yesterday")
+    //    {
+    //        // Mengambil data kemarin dari DataAccuracy
+    //        string yesterday = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+    //        DataAccuracy = DataAccuracy.Where(acc => acc.Date.ToString("yyyy-MM-dd") == yesterday).ToList();
+    //    }
+    //    else if (selectedValue == "Monthly")
+    //    {
+    //        // Menggunakan DataAccuracy langsung untuk opsi "monthly"
+    //        int currentMonth = DateTime.Today.Month;
+    //        DataAccuracy = DataAccuracy.Where(acc => acc.Date.Month == currentMonth).ToList();
+    //    }
+        
+    //}
+
+
+
+
+
+
+
+
+    
+}
